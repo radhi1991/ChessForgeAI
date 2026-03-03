@@ -17,6 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { FileText, Lightbulb, Loader2, AlertCircle, CheckCircle, UserSearch, BarChartHorizontalBig } from 'lucide-react';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
+import DOMPurify from 'dompurify';
 
 // Import types from the new API route locations
 import { type AnalyzeChessGameOutput } from '@/app/api/ai/analyze-chess-game/route';
@@ -176,8 +177,8 @@ export default function AnalysisPage() {
                           </FormControl>
                           <SelectContent className="bg-popover/80 backdrop-blur-md border-border/50">
                             <SelectItem value="lichess">Lichess.org</SelectItem>
-                            <SelectItem value="chesscom" disabled>Chess.com (Soon)</SelectItem>
-                            <SelectItem value="chess24" disabled>Chess24 (Soon)</SelectItem>
+                            <SelectItem value="chesscom" disabled>Chess.com (Coming Soon)</SelectItem>
+                            <SelectItem value="chess24" disabled>Chess24 (Coming Soon)</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -223,7 +224,7 @@ export default function AnalysisPage() {
                         <FormLabel>PGN Data</FormLabel>
                         <FormControl>
                           <Textarea
-                            placeholder="[Event \"Rated Blitz game\"]..."
+                            placeholder="[Event 'Rated Blitz game']..."
                             className="min-h-[200px] font-code text-sm bg-background/50 border-border/50"
                             {...field}
                           />
@@ -276,11 +277,16 @@ export default function AnalysisPage() {
           </CardHeader>
           <CardContent className="p-0">
             <ul className="space-y-3">
-              {improvementTips.tips.map((tip, index) => (
-                <li key={index} className="p-4 bg-background/30 rounded-lg border border-white/10 shadow-sm">
-                  <span dangerouslySetInnerHTML={{ __html: tip.replace(/\[(.*?)\]\((.*?)\)/g, (match, text, url) => `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-accent hover:underline">${text} <span role="img" aria-label="external link" class="inline-block align-middle"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-external-link h-3 w-3"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></span></a>`) }}></span>
-                </li>
-              ))}
+              {improvementTips.tips.map((tip, index) => {
+                const sanitizedHtml = DOMPurify.sanitize(
+                  tip.replace(/\[(.*?)\]\((.*?)\)/g, (match, text, url) => `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-accent hover:underline">${text} <span role="img" aria-label="external link" class="inline-block align-middle"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-external-link h-3 w-3"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></span></a>`)
+                );
+                return (
+                  <li key={index} className="p-4 bg-background/30 rounded-lg border border-white/10 shadow-sm">
+                    <span dangerouslySetInnerHTML={{ __html: sanitizedHtml }}></span>
+                  </li>
+                );
+              })}
             </ul>
           </CardContent>
         </Card>

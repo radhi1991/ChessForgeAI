@@ -18,6 +18,7 @@ import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend } from 'recharts';
+import { cn } from "@/lib/utils";
 
 // Import types from the new API route locations
 import { type FetchGameHistoryInput, type FetchGameHistoryOutput } from '@/app/api/ai/fetch-game-history/route';
@@ -61,21 +62,21 @@ interface ParsedPgnGame {
 function parsePgn(pgn: string): ParsedPgnGame {
   const tags: PgnTag[] = [];
   let moves = "";
-  const lines = pgn.split('\\n');
+  const lines = pgn.split('\n');
   let inHeaders = true;
 
   for (const line of lines) {
     if (line.startsWith('[')) {
-      const match = line.match(/\\[([A-Za-z0-9_]+) "(.*?)"\\]/);
+      const match = line.match(/\[([A-Za-z0-9_]+) "(.*?)"\]/);
       if (match) {
         tags.push({ name: match[1], value: match[2] });
       }
-    } else if (line.trim() !== "" && !line.startsWith('%')) { // Ignore empty lines and comments like %eval
+    } else if (line.trim() !== "" && !line.startsWith('%')) {
       inHeaders = false;
       moves += line + " ";
     }
   }
-  moves = moves.replace(/\\{[^}]*\\}/g, '').replace(/\\([^)]*\\)/g, '').trim(); // Remove comments and variations
+  moves = moves.replace(/\{[^}]*\}/g, '').replace(/\([^)]*\)/g, '').trim();
 
   const getTag = (name: string) => tags.find(tag => tag.name === name)?.value;
   
@@ -406,7 +407,7 @@ export default function DashboardPage() {
         </Card>
       )}
       
-      <div className="bento-grid lg:grid-cols-3 animate-fade-in animation-delay-400">
+      <div className="bento-grid lg:grid-cols-3 animate-fade-in" style={{ animationDelay: '400ms' }}>
         {analysisInsights.map((insight, index) => (
           <Card 
             key={insight.id} 
@@ -415,8 +416,9 @@ export default function DashboardPage() {
               "p-4 sm:p-6 flex flex-col",
               insight.colSpan || "lg:col-span-1",
               insight.rowSpan || "lg:row-span-1",
-              `animate-slide-up animation-delay-${200 + index * 100}`
+              "animate-slide-up"
             )}
+            style={{ animationDelay: `${200 + index * 100}ms` }}
           >
             <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 p-0">
               <div className="space-y-1">
@@ -453,9 +455,9 @@ export default function DashboardPage() {
         ))}
       </div>
 
-      <div className="bento-grid lg:grid-cols-2 animate-fade-in animation-delay-600">
+      <div className="bento-grid lg:grid-cols-2 animate-fade-in" style={{ animationDelay: '600ms' }}>
          {performanceData.length > 0 && (
-          <Card glass className="p-4 sm:p-6 lg:col-span-2 animate-slide-up animation-delay-800">
+          <Card glass className="p-4 sm:p-6 lg:col-span-2 animate-slide-up" style={{ animationDelay: '800ms' }}>
             <CardHeader className="p-0 pb-2">
               <CardTitle className="text-xl">Performance Trend</CardTitle>
               <CardDescription>Your approximate Lichess rating over the last {performanceData.length} analyzed games.</CardDescription>
@@ -486,7 +488,7 @@ export default function DashboardPage() {
         )}
 
         {recentGames.length > 0 && (
-          <Card glass className="p-4 sm:p-6 lg:col-span-2 animate-slide-up animation-delay-1000">
+          <Card glass className="p-4 sm:p-6 lg:col-span-2 animate-slide-up" style={{ animationDelay: '1000ms' }}>
             <CardHeader className="p-0 pb-2">
               <CardTitle className="text-xl">Recent Activity</CardTitle>
               <CardDescription>Your latest {recentGames.length} analyzed games.</CardDescription>

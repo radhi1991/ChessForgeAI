@@ -96,7 +96,7 @@ export function SidebarNav() {
             <SidebarMenuItem key={index}>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Link href={item.disabled || !item.href && !item.items ? "#" : item.href || "#"} asChild>
+                  <Link href={item.disabled || !item.href && !item.items ? "#" : item.href || "#"}>
                     <SidebarMenuButton
                       variant="default"
                       size="default"
@@ -129,23 +129,23 @@ export function SidebarNav() {
                     const isSubActive = subItem.active ?? (subItem.href ? pathname === subItem.href || pathname.startsWith(subItem.href) : false);
                     return (
                       <SidebarMenuSubItem key={subIndex}>
-                         <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Link href={subItem.disabled || !subItem.href ? "#" : subItem.href} asChild>
-                              <SidebarMenuSubButton
-                                size="md"
-                                isActive={isSubActive}
-                                aria-disabled={subItem.disabled}
-                                className={cn(
-                                  subItem.disabled && "cursor-not-allowed opacity-50",
-                                  "w-full justify-start"
-                                )}
-                              >
-                                {subItem.icon && <span className="mr-2 shrink-0">{subItem.icon}</span>}
-                                <span className="truncate flex-grow">{subItem.title}</span>
-                              </SidebarMenuSubButton>
-                            </Link>
-                          </TooltipTrigger>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Link href={subItem.disabled || !subItem.href ? "#" : subItem.href}>
+                                <SidebarMenuSubButton
+                                  size="md"
+                                  isActive={isSubActive}
+                                  aria-disabled={subItem.disabled}
+                                  className={cn(
+                                    subItem.disabled && "cursor-not-allowed opacity-50",
+                                    "w-full justify-start"
+                                  )}
+                                >
+                                  {subItem.icon && <span className="mr-2 shrink-0">{subItem.icon}</span>}
+                                  <span className="truncate flex-grow">{subItem.title}</span>
+                                </SidebarMenuSubButton>
+                              </Link>
+                            </TooltipTrigger>
                           <TooltipContent side="right" align="center" className="bg-popover text-popover-foreground p-2 rounded-md shadow-lg text-xs">
                             <p className="font-medium">{subItem.title}</p>
                             {subItem.description && <p className="text-muted-foreground">{subItem.description}</p>}

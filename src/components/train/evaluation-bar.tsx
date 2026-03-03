@@ -33,7 +33,7 @@ const EvaluationBar: React.FC<EvaluationBarProps> = ({ evaluation, maxAbsEval = 
           For Soft UI, a single color bar or a very subtle color change might be appropriate.
           Let's assume it uses the primary color for the fill for now.
       */}
-      <Progress value={barValue} className="h-3 w-full bg-secondary" indicatorClassName="bg-primary" />
+      <Progress value={barValue} className="h-3 w-full bg-secondary" />
     </div>
   );
 };

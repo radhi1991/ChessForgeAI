@@ -35,16 +35,7 @@ async function sha256(plain: string): Promise<ArrayBuffer> {
   if (typeof window !== 'undefined' && window.crypto?.subtle) {
     return window.crypto.subtle.digest('SHA-256', data);
   }
-  // Fallback for environments where window.crypto.subtle is not available.
-  // This scenario is less ideal for client-side PKCE.
-  // Node.js crypto module might be needed if this code ever ran server-side (not the case here).
-  console.warn("SHA256: window.crypto.subtle not available, using less ideal fallback if Node.js crypto isn't present.");
-  // For pure client-side without subtle.crypto, a robust polyfill would be better.
-  // This is a simplified fallback for demonstration and might not be cryptographically secure
-  // enough for all production scenarios if subtle.crypto is absent.
-  // A proper crypto library/polyfill should be used if subtle.crypto is unavailable.
-  const { createHash } = await import('crypto'); // This line will cause issues if 'crypto' module is not available in the browser environment or polyfilled.
-  return createHash('sha256').update(data).digest().buffer;
+  throw new Error("Web Crypto API not available. Please use a modern browser.");
 }
 
 function base64urlencode(a: ArrayBuffer): string {
@@ -69,7 +60,7 @@ export default function LoginPage() {
   const { toast } = useToast();
   const [lichessRedirectUri, setLichessRedirectUri] = useState('');
   // Set to true to pause URL cleanup for Lichess callback debugging, set to false for normal operation
-  const [debugLichessCallback, setDebugLichessCallback] = useState(true);
+  const [debugLichessCallback] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {

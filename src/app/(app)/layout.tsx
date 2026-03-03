@@ -40,15 +40,24 @@ export default function AppLayout({
   const router = useRouter();
   const { toast } = useToast();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
     const verifyAuth = async () => {
-      const user = await checkAuthStatus();
-      if (user) {
-        setIsAuthenticated(true);
-      } else {
+      try {
+        const user = await checkAuthStatus();
+        if (user) {
+          setIsAuthenticated(true);
+        } else {
+          setIsAuthenticated(false);
+          router.push('/login');
+        }
+      } catch (error) {
+        console.error("Auth verification error:", error);
         setIsAuthenticated(false);
         router.push('/login');
+      } finally {
+        setAuthChecked(true);
       }
     };
     verifyAuth();
@@ -58,7 +67,7 @@ export default function AppLayout({
     try {
       await auth.signOut();
       toast({ title: "Signed Out", description: "You have been successfully signed out." });
-      setIsAuthenticated(false); // Update local auth state
+      setIsAuthenticated(false);
       router.push('/login');
     } catch (error) {
       console.error("Sign out error", error);
@@ -66,7 +75,7 @@ export default function AppLayout({
     }
   };
 
-  if (isAuthenticated === null) {
+  if (!authChecked || isAuthenticated === null) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-background text-foreground">
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
@@ -75,15 +84,8 @@ export default function AppLayout({
     );
   }
 
-  // If not authenticated, router.push should handle redirection. 
-  // A minimal loader can be shown during this brief period.
   if (!isAuthenticated) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-background text-foreground">
-        <Loader2 className="h-12 w-12 animate-spin text-primary" />
-        <p className="mt-4 text-lg font-medium">Redirecting to login...</p>
-      </div>
-    );
+    return null;
   }
   
 
